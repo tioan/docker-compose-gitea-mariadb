@@ -1,0 +1,47 @@
+version: '3'
+
+services:
+  gitea:
+    image: gitea/gitea:1
+    container_name: ${CONTAINER_NAME}
+    restart: unless-stopped
+    volumes:
+      - ${GITEA_DATA_PATH}:/data
+    environment:
+      VIRTUAL_HOST: ${DOMAIN}
+      VIRTUAL_PORT: ${PORT}
+      LETSENCRYPT_HOST: ${DOMAIN}
+      LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}    
+      APP_NAME: ${APP_NAME}
+      RUN_MODE: ${RUN_MODE}
+      SSH_DOMAIN: ${DOMAIN}
+      SSH_PORT: ${SSH_PORT}
+      DISABLE_SSH: ${DISABLE_SSH}
+      HTTP_PORT: ${PORT}
+      ROOT_URL: https://${DOMAIN}
+      DB_TYPE: ${DB_TYPE}
+      DB_HOST: ${DB_HOST}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWD: ${DB_PASSWD}
+      INSTALL_LOCK: ${INSTALL_LOCK}
+      SECRET_KEY: ${SECRET_KEY}
+      DISABLE_REGISTRATION: ${DISABLE_REGISTRATION}
+      REQUIRE_SIGNIN_VIEW: ${REQUIRE_SIGIN_VIEW}
+      USER_UID: ${USER_UID}
+      USER_GID: ${USER_GID}
+  db:
+    image: mariadb
+    restart: always
+    volumes:
+      - ${DB_DATA_PATH}:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWD}
+      MYSQL_DATABASE: ${DB_NAME}
+
+networks:
+  default:
+    external:
+      name: ${NETWORK}
